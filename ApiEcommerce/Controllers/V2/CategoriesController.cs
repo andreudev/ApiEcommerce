@@ -30,7 +30,6 @@ namespace ApiEcommerce.Controllers.V2
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         // [EnableCors(PolicyNames.AllowSpecificOrigin)]
-        [MapToApiVersion("2.0")]
         [AllowAnonymous]
         public IActionResult GetCategoriesOrderById()
         {
