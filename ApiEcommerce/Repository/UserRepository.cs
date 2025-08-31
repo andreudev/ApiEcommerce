@@ -4,6 +4,8 @@ using System.Security.Claims;
 using System.Text;
 using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,19 +17,35 @@ public class UserRepository : IUserRepository
 
     private string? secretKey;
 
-    public UserRepository(ApplicationDbContext db, IConfiguration configuration)
+    private readonly UserManager<ApplicationUser> _userManager;
+
+    private readonly RoleManager<IdentityRole> _roleManager;
+
+    private readonly IMapper _mapper;
+
+    public UserRepository(
+        ApplicationDbContext db,
+        IConfiguration configuration,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IMapper mapper
+    )
     {
         _db = db;
         secretKey = configuration.GetValue<string>("ApiSettings:SecretKey");
-    }
-    public User? GetUser(int id)
-    {
-        return _db.Users.FirstOrDefault(u => u.Id == id);
+        _userManager = userManager;
+        _roleManager = roleManager;
+        _mapper = mapper;
     }
 
-    public ICollection<User> GetUsers()
+    public ApplicationUser? GetUser(string id)
     {
-        return _db.Users.OrderBy(u => u.Username).ToList();
+        return _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+    }
+
+    public ICollection<ApplicationUser> GetUsers()
+    {
+        return _db.ApplicationUsers.OrderBy(u => u.UserName).ToList();
     }
 
     public bool IsUniqueUser(string username)
@@ -43,21 +61,28 @@ public class UserRepository : IUserRepository
             {
                 Token = string.Empty,
                 User = null,
-                Message = "Secret key is not configured"
+                Message = "Secret key is not configured",
             };
         }
 
-        if (userLoginDto == null || string.IsNullOrEmpty(userLoginDto.Username) || string.IsNullOrEmpty(userLoginDto.Password))
+        if (
+            userLoginDto == null
+            || string.IsNullOrEmpty(userLoginDto.Username)
+            || string.IsNullOrEmpty(userLoginDto.Password)
+        )
         {
             return new UserLoginResponseDto()
             {
                 Token = string.Empty,
                 User = null,
-                Message = "Invalid login request"
+                Message = "Invalid login request",
             };
         }
 
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Username.ToLower().Trim() == userLoginDto.Username.ToLower().Trim());
+        var user = await _db.ApplicationUsers.FirstOrDefaultAsync(u =>
+            u.UserName != null
+            && u.UserName.ToLower().Trim() == userLoginDto.Username.ToLower().Trim()
+        );
 
         if (user == null)
         {
@@ -65,17 +90,19 @@ public class UserRepository : IUserRepository
             {
                 Token = string.Empty,
                 User = null,
-                Message = "User not found"
+                Message = "User not found",
             };
         }
 
-        if (!BCrypt.Net.BCrypt.Verify(userLoginDto.Password, user.Password))
+        bool isValid = await _userManager.CheckPasswordAsync(user, userLoginDto.Password);
+
+        if (!isValid)
         {
             return new UserLoginResponseDto()
             {
                 Token = string.Empty,
                 User = null,
-                Message = "Incorrect password"
+                Message = "Incorrect password",
             };
         }
 
@@ -85,50 +112,77 @@ public class UserRepository : IUserRepository
         {
             throw new InvalidOperationException("Secret key is not configured.");
         }
+
+        var roles = await _userManager.GetRolesAsync(user);
         var key = Encoding.UTF8.GetBytes(secretKey);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(
-                new[] {
+                new[]
+                {
                     new Claim("id", user.Id.ToString()),
-                    new Claim("username", user.Username),
-                    new Claim(ClaimTypes.Role, user.Role ?? string.Empty)
+                    new Claim("username", user.UserName ?? string.Empty),
+                    new Claim(ClaimTypes.Role, roles.FirstOrDefault() ?? string.Empty),
                 }
             ),
             Expires = DateTime.UtcNow.AddHours(2),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature
+            ),
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return new UserLoginResponseDto()
         {
             Token = tokenHandler.WriteToken(token),
-            User = new UserRegisterDto
-            {
-                Id = user.Id.ToString(),
-                Name = user.Name,
-                Username = user.Username,
-                Role = user.Role,
-                Password = user.Password ?? string.Empty
-            },
-            Message = "Login successful"
+            User = _mapper.Map<UserDataDto>(user),
+            Message = "Login successful",
         };
     }
 
-    public async Task<User> Register(CreateUserDto createUserDto)
+    public async Task<UserDataDto> Register(CreateUserDto createUserDto)
     {
-        var encriptedPass = BCrypt.Net.BCrypt.HashPassword(createUserDto.Password);
-        var user = new User
+        if (
+            createUserDto == null
+            || string.IsNullOrEmpty(createUserDto.Username)
+            || string.IsNullOrEmpty(createUserDto.Password)
+        )
         {
+            throw new ArgumentException("Invalid user data");
+        }
+
+        var user = new ApplicationUser()
+        {
+            UserName = createUserDto.Username,
+            Email = createUserDto.Username,
+            NormalizedEmail = createUserDto.Username.ToUpper(),
             Name = createUserDto.Name,
-            Username = createUserDto.Username ?? "No username",
-            Password = encriptedPass,
-            Role = createUserDto.Role
         };
 
-        _db.Users.Add(user);
-        await _db.SaveChangesAsync();
+        var result = await _userManager.CreateAsync(user, createUserDto.Password);
 
-        return user;
+        if (result.Succeeded)
+        {
+            var userRole = createUserDto.Role ?? "User";
+            var RoleExists = await _roleManager.RoleExistsAsync(userRole);
+            if (!RoleExists)
+            {
+                var identityRole = new IdentityRole(userRole);
+                await _roleManager.CreateAsync(identityRole);
+            }
+            await _userManager.AddToRoleAsync(user, userRole);
+
+            var createdUser = await _db.ApplicationUsers.FirstOrDefaultAsync(u =>
+                u.UserName == createUserDto.Username
+            );
+
+            return _mapper.Map<UserDataDto>(createdUser);
+        }
+
+        var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+        throw new ApplicationException(
+            $"User creation failed! Please check user details and try again. Errors: {errors}"
+        );
     }
 }

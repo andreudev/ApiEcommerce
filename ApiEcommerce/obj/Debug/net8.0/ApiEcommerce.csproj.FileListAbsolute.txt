@@ -175,3 +175,8 @@
 /home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Asp.Versioning.Mvc.dll
 /home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Asp.Versioning.Mvc.ApiExplorer.dll
 /home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/obj/Debug/net8.0/ApiEcommerce.sourcelink.json
+/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Microsoft.AspNetCore.Cryptography.Internal.dll
+/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Microsoft.Extensions.Identity.Core.dll
+/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Microsoft.Extensions.Identity.Stores.dll

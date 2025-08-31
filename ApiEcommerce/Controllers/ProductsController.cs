@@ -20,7 +20,11 @@ namespace ApiEcommerce.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository productRepository, ICategoryRepository categoryRepository, IMapper mapper)
+        public ProductsController(
+            IProductRepository productRepository,
+            ICategoryRepository categoryRepository,
+            IMapper mapper
+        )
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
@@ -83,7 +87,10 @@ namespace ApiEcommerce.Controllers
             var product = _mapper.Map<Product>(createProductDto);
             if (!_productRepository.CreateProduct(product))
             {
-                ModelState.AddModelError("CustomError", "Something went wrong while saving the product");
+                ModelState.AddModelError(
+                    "CustomError",
+                    "Something went wrong while saving the product"
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
 
@@ -145,7 +152,10 @@ namespace ApiEcommerce.Controllers
             var success = _productRepository.BuyProduct(name, quantity);
             if (!success)
             {
-                ModelState.AddModelError("CustomError", "Purchase could not be completed. Check stock availability.");
+                ModelState.AddModelError(
+                    "CustomError",
+                    "Purchase could not be completed. Check stock availability."
+                );
                 return BadRequest(ModelState);
             }
 
@@ -158,7 +168,10 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult UpdateProduct(int productId, [FromBody] CreateProductDto updateProductDto)
+        public IActionResult UpdateProduct(
+            int productId,
+            [FromBody] CreateProductDto updateProductDto
+        )
         {
             if (updateProductDto == null)
             {
@@ -180,7 +193,10 @@ namespace ApiEcommerce.Controllers
             product.ProductId = productId;
             if (!_productRepository.UpdateProduct(product))
             {
-                ModelState.AddModelError("CustomError", "Something went wrong while updating the product");
+                ModelState.AddModelError(
+                    "CustomError",
+                    "Something went wrong while updating the product"
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
 
@@ -205,11 +221,13 @@ namespace ApiEcommerce.Controllers
             }
             if (!_productRepository.DeleteProduct(product))
             {
-                ModelState.AddModelError("CustomError", "Something went wrong while deleting the product");
+                ModelState.AddModelError(
+                    "CustomError",
+                    "Something went wrong while deleting the product"
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
             return NoContent();
         }
-
     }
 }

@@ -85,7 +85,10 @@ namespace ApiEcommerce.Controllers.V2
             var category = _mapper.Map<Category>(createCategoryDto);
             if (!_categoryRepository.CreateCategory(category))
             {
-                ModelState.AddModelError("CustomError", "Something went wrong while saving the category");
+                ModelState.AddModelError(
+                    "CustomError",
+                    "Something went wrong while saving the category"
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
             return CreatedAtRoute("GetCategory", new { id = category.ID }, category);
@@ -98,7 +101,6 @@ namespace ApiEcommerce.Controllers.V2
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-
         public IActionResult UpdateCategory(int id, [FromBody] CreateCategoryDto updateCategoryDto)
         {
             if (updateCategoryDto == null)
@@ -118,7 +120,10 @@ namespace ApiEcommerce.Controllers.V2
             category.ID = id;
             if (!_categoryRepository.UpdateCategory(category))
             {
-                ModelState.AddModelError("CustomError", "Something went wrong while updating the category");
+                ModelState.AddModelError(
+                    "CustomError",
+                    "Something went wrong while updating the category"
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
             return NoContent();
@@ -146,13 +151,13 @@ namespace ApiEcommerce.Controllers.V2
 
             if (!_categoryRepository.DeleteCategory(category))
             {
-                ModelState.AddModelError("CustomError", "Something went wrong while deleting the category");
+                ModelState.AddModelError(
+                    "CustomError",
+                    "Something went wrong while deleting the category"
+                );
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
             return NoContent();
         }
-
-
-
     }
 }

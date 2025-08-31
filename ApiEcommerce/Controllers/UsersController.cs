@@ -15,8 +15,6 @@ namespace ApiEcommerce.Controllers
     [ApiVersion("2.0")]
     public class UsersController : ControllerBase
     {
-
-
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
@@ -25,7 +23,6 @@ namespace ApiEcommerce.Controllers
             _userRepository = userRepository;
             _mapper = mapper;
         }
-
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -38,12 +35,12 @@ namespace ApiEcommerce.Controllers
             return Ok(usersDto);
         }
 
-        [HttpGet("{userId:int}", Name = "GetUser")]
+        [HttpGet("{userId}", Name = "GetUser")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult GetUser(int userId)
+        public IActionResult GetUser(string userId)
         {
             var user = _userRepository.GetUser(userId);
             if (user == null)
@@ -87,7 +84,6 @@ namespace ApiEcommerce.Controllers
             return CreatedAtRoute("GetUser", new { userId = result.Id }, result);
         }
 
-
         [AllowAnonymous]
         [HttpPost("Login", Name = "LoginUser")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -101,7 +97,6 @@ namespace ApiEcommerce.Controllers
                 return BadRequest(ModelState);
             }
 
-
             var result = await _userRepository.Login(userLoginDto);
             if (result == null)
             {
@@ -112,4 +107,3 @@ namespace ApiEcommerce.Controllers
         }
     }
 }
-

@@ -1,5 +1,3 @@
-
-
 namespace ApiEcommerce.Repository.IRepository;
 
 public interface ICategoryRepository

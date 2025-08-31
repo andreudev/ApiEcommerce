@@ -12,6 +12,7 @@ public class ProductRepository : IProductRepository
     {
         _db = db;
     }
+
     public bool BuyProduct(string name, int quantity)
     {
         if (string.IsNullOrWhiteSpace(name) || quantity <= 0)
@@ -19,7 +20,9 @@ public class ProductRepository : IProductRepository
             return false;
         }
 
-        var product = _db.Products.FirstOrDefault(p => p.Name.Trim().ToLower() == name.Trim().ToLower());
+        var product = _db.Products.FirstOrDefault(p =>
+            p.Name.Trim().ToLower() == name.Trim().ToLower()
+        );
         if (product == null || product.Stock < quantity)
         {
             return false;
@@ -74,7 +77,11 @@ public class ProductRepository : IProductRepository
             return new List<Product>();
         }
 
-        return _db.Products.Include(p => p.Category).Where(p => p.CategoryId == categoryId).OrderBy(p => p.Name).ToList();
+        return _db
+            .Products.Include(p => p.Category)
+            .Where(p => p.CategoryId == categoryId)
+            .OrderBy(p => p.Name)
+            .ToList();
     }
 
     public bool ProductExists(int id)
@@ -110,7 +117,12 @@ public class ProductRepository : IProductRepository
         }
 
         IQueryable<Product> query = _db.Products;
-        query = query.Include(p => p.Category).Where(p => p.Name.Trim().ToLower().Contains(searchTermToLower) || p.Description.Trim().ToLower().Contains(searchTermToLower));
+        query = query
+            .Include(p => p.Category)
+            .Where(p =>
+                p.Name.Trim().ToLower().Contains(searchTermToLower)
+                || p.Description.Trim().ToLower().Contains(searchTermToLower)
+            );
         return query.OrderBy(p => p.Name).ToList();
     }
 

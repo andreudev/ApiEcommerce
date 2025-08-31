@@ -1,5 +1,3 @@
-
-
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -33,6 +31,7 @@ public class Product
 
     // Relation
     public int CategoryId { get; set; }
+
     [ForeignKey("CategoryId")]
     public required Category Category { get; set; }
 }

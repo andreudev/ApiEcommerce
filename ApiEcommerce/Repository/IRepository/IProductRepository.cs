@@ -1,12 +1,9 @@
-
-
 using ApiEcommerce.Models;
 
 namespace ApiEcommerce.Repository.IRepository;
 
 public interface IProductRepository
 {
-
     ICollection<Product> GetProducts();
     ICollection<Product> GetProductsForCategory(int categoryId);
     ICollection<Product> SearchProducts(string name);
