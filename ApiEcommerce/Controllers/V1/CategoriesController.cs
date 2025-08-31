@@ -31,6 +31,7 @@ namespace ApiEcommerce.Controllers.V1
         [ProducesResponseType(StatusCodes.Status200OK)]
         // [EnableCors(PolicyNames.AllowSpecificOrigin)]
         [AllowAnonymous]
+        [Obsolete("This endpoint is deprecated. Please use the v2 endpoint.")]
         public IActionResult GetCategories()
         {
             var categories = _categoryRepository.GetCategories();

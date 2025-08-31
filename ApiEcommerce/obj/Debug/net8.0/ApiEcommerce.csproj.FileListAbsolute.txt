@@ -174,3 +174,4 @@
 /home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Asp.Versioning.Http.dll
 /home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Asp.Versioning.Mvc.dll
 /home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/bin/Debug/net8.0/Asp.Versioning.Mvc.ApiExplorer.dll
+/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/obj/Debug/net8.0/ApiEcommerce.sourcelink.json
