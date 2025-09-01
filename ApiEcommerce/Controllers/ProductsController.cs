@@ -1,5 +1,6 @@
 using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
+using ApiEcommerce.Models.Dtos.Responses;
 using ApiEcommerce.Repository.IRepository;
 using Asp.Versioning;
 using AutoMapper;
@@ -58,6 +59,44 @@ namespace ApiEcommerce.Controllers
             }
             var productDto = _mapper.Map<ProductoDto>(product);
             return Ok(productDto);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("Paged", Name = "GetProductsInPage")]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetProductsInPage(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10
+        )
+        {
+            if (pageNumber < 1 || pageSize < 1)
+            {
+                return BadRequest("Page number and page size must be greater than 0.");
+            }
+
+            var totalProducts = _productRepository.GetTotalProducts();
+            var totalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
+            if (pageNumber > totalPages)
+            {
+                return NotFound($"No products found on page {pageNumber}.");
+            }
+            var products = _productRepository.GetProductsInPages(pageNumber, pageSize);
+            if (products == null || !products.Any())
+            {
+                return NotFound($"No products found.");
+            }
+            var productDtos = _mapper.Map<List<ProductoDto>>(products);
+            var paginationResponse = new PaginationResponse<ProductoDto>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+                Items = productDtos,
+            };
+            return Ok(paginationResponse);
         }
 
         [HttpPost]

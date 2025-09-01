@@ -1,5 +1,6 @@
 using System.Text;
 using ApiEcommerce.Constants;
+using ApiEcommerce.Data;
 using ApiEcommerce.Models;
 using ApiEcommerce.Repository;
 using ApiEcommerce.Repository.IRepository;
@@ -17,7 +18,15 @@ string? dbConnectionString = builder.Configuration.GetConnectionString("Conexion
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(dbConnectionString)
+    options
+        .UseSqlServer(dbConnectionString)
+        .UseSeeding(
+            (context, _) =>
+            {
+                var appContext = (ApplicationDbContext)context;
+                DataSeeder.SeedData(appContext);
+            }
+        )
 );
 
 builder.Services.AddResponseCaching(options =>

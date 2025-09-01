@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "9Ox1NpinLBRAmqnCqcb5QsB+7arFSySVHDGY6tZyc/A=",
+  "Hash": "qnVwQi+HJ4saYETJY2jNxHvIEogZnXquoJ+ii23DF10=",
   "Source": "ApiEcommerce",
   "BasePath": "_content/ApiEcommerce",
   "Mode": "Default",
@@ -129,6 +129,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/ProductsImages/03686b791-8a62-431a-b645-aa152194d305.jpg"
+    },
+    {
+      "Identity": "/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/wwwroot/ProductsImages/08a2fe2b4-9d20-47b3-9ec9-d09e7e433bf5.jpg",
+      "SourceId": "ApiEcommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/wwwroot/",
+      "BasePath": "_content/ApiEcommerce",
+      "RelativePath": "ProductsImages/08a2fe2b4-9d20-47b3-9ec9-d09e7e433bf5.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/ProductsImages/08a2fe2b4-9d20-47b3-9ec9-d09e7e433bf5.jpg"
     },
     {
       "Identity": "/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/wwwroot/ProductsImages/0f4d4aa8a-578b-4029-8369-6c0d47a133f5.jpg",
