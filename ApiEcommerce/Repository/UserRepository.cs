@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using ApiEcommerce.Models;
 using ApiEcommerce.Models.Dtos;
-using AutoMapper;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -21,21 +21,17 @@ public class UserRepository : IUserRepository
 
     private readonly RoleManager<IdentityRole> _roleManager;
 
-    private readonly IMapper _mapper;
-
     public UserRepository(
         ApplicationDbContext db,
         IConfiguration configuration,
         UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager,
-        IMapper mapper
+        RoleManager<IdentityRole> roleManager
     )
     {
         _db = db;
         secretKey = configuration.GetValue<string>("ApiSettings:SecretKey");
         _userManager = userManager;
         _roleManager = roleManager;
-        _mapper = mapper;
     }
 
     public ApplicationUser? GetUser(string id)
@@ -136,7 +132,7 @@ public class UserRepository : IUserRepository
         return new UserLoginResponseDto()
         {
             Token = tokenHandler.WriteToken(token),
-            User = _mapper.Map<UserDataDto>(user),
+            User = user.Adapt<UserDataDto>(),
             Message = "Login successful",
         };
     }
@@ -177,7 +173,7 @@ public class UserRepository : IUserRepository
                 u.UserName == createUserDto.Username
             );
 
-            return _mapper.Map<UserDataDto>(createdUser);
+            return createdUser.Adapt<UserDataDto>();
         }
 
         var errors = string.Join("; ", result.Errors.Select(e => e.Description));
@@ -186,3 +182,4 @@ public class UserRepository : IUserRepository
         );
     }
 }
+// ...existing code...

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "cLpksY8Hdts=",
+  "dgSpecHash": "xaCr5mR2ilw=",
   "success": true,
   "projectFilePath": "/home/andreudev/Workspace/CSharp/ApiEcommerce/ApiEcommerce/ApiEcommerce.csproj",
   "expectedPackageFiles": [
@@ -14,6 +14,9 @@
     "/home/andreudev/.nuget/packages/azure.identity/1.11.4/azure.identity.1.11.4.nupkg.sha512",
     "/home/andreudev/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512",
     "/home/andreudev/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
+    "/home/andreudev/.nuget/packages/mapster/7.4.0/mapster.7.4.0.nupkg.sha512",
+    "/home/andreudev/.nuget/packages/mapster.core/1.2.1/mapster.core.1.2.1.nupkg.sha512",
+    "/home/andreudev/.nuget/packages/mapster.dependencyinjection/1.0.1/mapster.dependencyinjection.1.0.1.nupkg.sha512",
     "/home/andreudev/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.19/microsoft.aspnetcore.authentication.jwtbearer.8.0.19.nupkg.sha512",
     "/home/andreudev/.nuget/packages/microsoft.aspnetcore.cryptography.internal/8.0.19/microsoft.aspnetcore.cryptography.internal.8.0.19.nupkg.sha512",
     "/home/andreudev/.nuget/packages/microsoft.aspnetcore.cryptography.keyderivation/8.0.19/microsoft.aspnetcore.cryptography.keyderivation.8.0.19.nupkg.sha512",
