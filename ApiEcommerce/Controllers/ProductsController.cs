@@ -66,7 +66,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult CreateProduct([FromBody] CreateProductDto createProductDto)
+        public IActionResult CreateProduct([FromForm] CreateProductDto createProductDto)
         {
             if (createProductDto == null)
             {
@@ -85,6 +85,16 @@ namespace ApiEcommerce.Controllers
             }
 
             var product = _mapper.Map<Product>(createProductDto);
+            // agregar la imagen
+            if (createProductDto.ImageFile != null)
+            {
+                UploadProductImage(createProductDto, product);
+            }
+            else
+            {
+                product.ImgUrl = "https://placehold.co/600x400";
+            }
+
             if (!_productRepository.CreateProduct(product))
             {
                 ModelState.AddModelError(
@@ -170,7 +180,7 @@ namespace ApiEcommerce.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult UpdateProduct(
             int productId,
-            [FromBody] CreateProductDto updateProductDto
+            [FromForm] UpdateProductDto updateProductDto
         )
         {
             if (updateProductDto == null)
@@ -191,6 +201,15 @@ namespace ApiEcommerce.Controllers
 
             var product = _mapper.Map<Product>(updateProductDto);
             product.ProductId = productId;
+
+            if (updateProductDto.ImageFile != null)
+            {
+                UploadProductImage(updateProductDto, product);
+            }
+            else
+            {
+                product.ImgUrl = "https://placehold.co/600x400";
+            }
             if (!_productRepository.UpdateProduct(product))
             {
                 ModelState.AddModelError(
@@ -201,6 +220,42 @@ namespace ApiEcommerce.Controllers
             }
 
             return NoContent();
+        }
+
+        private void UploadProductImage(dynamic productDto, Product product)
+        {
+            string fileName =
+                product.ProductId
+                + Guid.NewGuid().ToString()
+                + Path.GetExtension(productDto.ImageFile.FileName);
+
+            var imageFolder = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                "ProductsImages"
+            );
+
+            if (!Directory.Exists(imageFolder))
+            {
+                Directory.CreateDirectory(imageFolder);
+            }
+
+            var filePath = Path.Combine(imageFolder, fileName);
+
+            FileInfo file = new FileInfo(filePath);
+            if (file.Exists)
+            {
+                file.Delete();
+            }
+            using var fileStream = new FileStream(filePath, FileMode.Create);
+            productDto.ImageFile.CopyTo(fileStream);
+
+            var baseUrl =
+                $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}{HttpContext.Request.PathBase.Value}";
+
+            product.ImgUrl = baseUrl + "/ProductsImages/" + fileName;
+
+            product.ImgUrlLocal = filePath;
         }
 
         [HttpDelete("{productId:int}", Name = "DeleteProduct")]
